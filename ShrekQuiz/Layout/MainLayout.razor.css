@@ -1,0 +1,29 @@
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh; /* dynamic viewport for mobile */
+    background: linear-gradient(170deg, #1a2e12 0%, #2D4C1E 40%, #1f3a13 100%);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    padding-top: max(var(--spacing-xl), env(safe-area-inset-top));
+}
+
+.content {
+    width: 100%;
+    max-width: 920px;
+}
+
+@media (min-width: 641px) {
+    main {
+        align-items: center;
+        padding: var(--spacing-xl);
+    }
+}

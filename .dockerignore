@@ -1,0 +1,10 @@
+.git/
+.gitignore
+**/.idea/
+**/.sisyphus/
+**/bin/
+**/obj/
+*.md
+*.sln
+docker-compose.yml
+Dockerfile

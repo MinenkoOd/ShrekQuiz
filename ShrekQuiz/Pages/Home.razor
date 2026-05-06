@@ -1,0 +1,193 @@
+﻿@page "/"
+@inject QuizService QuizService
+
+<PageTitle>ШРЕК-КВИЗ</PageTitle>
+
+@if (_showStart)
+{
+    <div class="hero-screen">
+        <h1 class="hero-title">ШРЕК-КВИЗ</h1>
+        <h2 class="hero-subtitle">Битва за Болото</h2>
+        <p class="hero-description">26 вопросов о легендарном болотном огре</p>
+        <button class="btn-start" @onclick="StartQuiz">Начать квиз!</button>
+    </div>
+}
+else if (_showResult)
+{
+    <div class="result-screen">
+        <h1 class="hero-title" style="font-size: var(--text-3xl);">ПОЗДРАВЛЯЕМ!</h1>
+        <h2 class="hero-subtitle">Ты — настоящий знаток Болота!</h2>
+        <div class="result-score">
+            <span class="score-number">@_score</span>
+            <span class="score-total"> / @QuizService.Questions.Count</span>
+        </div>
+        <p class="hero-description">@GetResultMessage()</p>
+        <div class="birthday-wishes">
+            <p class="hero-subtitle" style="margin-bottom: var(--spacing-sm);">🎉 С Днём Рождения! 🎂</p>
+            <p class="hero-description" style="margin: 0;">Желаем всего самого наилучшего, счастья, здоровья и исполнения всех желаний!</p>
+        </div>
+        <button class="btn-start" @onclick="RestartQuiz">Пройти еще раз</button>
+    </div>
+}
+else
+{
+    <div class="quiz-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="badge bg-swamp">Вопрос @_currentIndex / @QuizService.Questions.Count</span>
+            <span class="text-swamp-light">Очки: <strong>@_score</strong></span>
+        </div>
+
+        <div class="progress mb-4">
+            <div class="progress-bar bg-swamp-accent" role="progressbar"
+                 style="width: @GetProgressPercent()%"
+                 aria-valuenow="@_currentIndex" aria-valuemin="0" aria-valuemax="@QuizService.Questions.Count">
+            </div>
+        </div>
+
+        <div class="quiz-landscape">
+            @if (!string.IsNullOrEmpty(CurrentQuestion.ImagePath))
+            {
+                <div class="question-image-container">
+                    <img src="@CurrentQuestion.ImagePath" alt="@CurrentQuestion.Text" class="question-image" />
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(GetNextImagePath()))
+            {
+                <img src="@GetNextImagePath()" style="display:none;" alt="" />
+            }
+
+            <div class="question-content">
+                <h2 style="color: #ffffff;">@CurrentQuestion.Text</h2>
+
+                <div class="options-list">
+                    @for (int i = 0; i < CurrentQuestion.Options.Count; i++)
+                    {
+                        var index = i;
+                        <button
+                            class="option-btn @GetOptionClass(index)"
+                            @onclick="() => SelectAnswer(index)"
+                            >
+                            <span class="option-letter">@GetOptionLetter(index)</span>
+                            @CurrentQuestion.Options[index]
+                        </button>
+                    }
+                </div>
+
+                @if (_isAnswered)
+                {
+                    <div class="feedback-row">
+                        @if (_selectedAnswer == CurrentQuestion.CorrectAnswerIndex)
+                        {
+                            <p class="feedback-correct">Правильно! 🎉</p>
+                        }
+                        else
+                        {
+                            <p class="feedback-incorrect">Неправильно! 😢</p>
+                            <p class="feedback-hint">
+                                Правильный ответ: <strong>@CurrentQuestion.Options[CurrentQuestion.CorrectAnswerIndex]</strong>
+                            </p>
+                        }
+
+                        <button class="btn-start" @onclick="NextQuestion">
+                            @(_currentIndex < QuizService.Questions.Count ? "Следующий вопрос →" : "Узнать результат!")
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool _showStart = true;
+    private bool _showResult = false;
+    private int _currentIndex = 0;
+    private int _score = 0;
+    private int _selectedAnswer = -1;
+    private bool _isAnswered = false;
+
+    private Question CurrentQuestion => QuizService.Questions[_currentIndex - 1];
+
+    private void StartQuiz()
+    {
+        _showStart = false;
+        _currentIndex = 1;
+        _score = 0;
+        _selectedAnswer = -1;
+        _isAnswered = false;
+    }
+
+    private void SelectAnswer(int index)
+    {
+        if (_isAnswered) return;
+
+        _selectedAnswer = index;
+        _isAnswered = true;
+
+        if (index == CurrentQuestion.CorrectAnswerIndex)
+        {
+            _score++;
+        }
+    }
+
+    private void NextQuestion()
+    {
+        if (_currentIndex < QuizService.Questions.Count)
+        {
+            _currentIndex++;
+            _selectedAnswer = -1;
+            _isAnswered = false;
+        }
+        else
+        {
+            _showResult = true;
+        }
+    }
+
+    private void RestartQuiz()
+    {
+        _showStart = true;
+        _showResult = false;
+        _currentIndex = 0;
+        _score = 0;
+        _selectedAnswer = -1;
+        _isAnswered = false;
+    }
+
+    private string GetOptionClass(int index)
+    {
+        if (!_isAnswered) return "option-default";
+
+        if (index == CurrentQuestion.CorrectAnswerIndex)
+            return "option-correct";
+
+        if (index == _selectedAnswer && index != CurrentQuestion.CorrectAnswerIndex)
+            return "option-incorrect";
+
+        return "option-default no-clicks";
+    }
+
+    private string GetOptionLetter(int index) => ((char)('A' + index)).ToString();
+
+    private string GetNextImagePath()
+    {
+        if (_currentIndex < QuizService.Questions.Count)
+            return QuizService.Questions[_currentIndex].ImagePath ?? "";
+        return "";
+    }
+
+    private int GetProgressPercent() => (int)((double)_currentIndex / QuizService.Questions.Count * 100);
+
+    private string GetResultMessage()
+    {
+        var percent = (double)_score / QuizService.Questions.Count;
+        return percent switch
+        {
+            >= 0.9 => "Великолепно! Ты настоящий житель Болота!",
+            >= 0.7 => "Отличный результат! Шрек бы тобой гордился!",
+            >= 0.5 => "Неплохо! Но есть к чему стремиться.",
+            _ => "Похоже, тебе стоит пересмотреть мультфильмы!"
+        };
+    }
+}

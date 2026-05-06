@@ -1,0 +1,24 @@
+{
+  "name": "ШРЕК-КВИЗ: Битва за Болото",
+  "short_name": "ШРЕК-КВИЗ",
+  "description": "26 вопросов о легендарном болотном огре",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1a2e12",
+  "theme_color": "#1a2e12",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "lang": "ru"
+}

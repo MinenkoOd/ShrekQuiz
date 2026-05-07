@@ -407,12 +407,22 @@ a, .btn-link { color: var(--color-accent); }
 }
 
 /* ============================================================
-   FEEDBACK ROW
+   FEEDBACK ROW — always in DOM, CSS transition avoids flash
    ============================================================ */
 .feedback-row {
     text-align: center;
     margin-top: var(--spacing-lg);
-    animation: fadeInUp 0.4s var(--ease-smooth);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.35s var(--ease-smooth),
+                transform 0.35s var(--ease-smooth);
+}
+
+.feedback-row.feedback-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .feedback-correct {
@@ -432,17 +442,6 @@ a, .btn-link { color: var(--color-accent); }
 .feedback-hint {
     color: var(--color-text-light);
     margin-bottom: var(--spacing-md);
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* ============================================================

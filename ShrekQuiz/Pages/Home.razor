@@ -89,10 +89,10 @@ else
                     }
                 </div>
 
-                @if (_isAnswered)
-                {
-                    <div class="feedback-row">
-                        @if (_selectedAnswer == CurrentQuestion.CorrectAnswerIndex)
+                <div class="feedback-row @(_isAnswered ? "feedback-visible" : "")">
+                    @if (_isAnswered)
+                    {
+                        if (_selectedAnswer == CurrentQuestion.CorrectAnswerIndex)
                         {
                             <p class="feedback-correct">Правильно! 🎉</p>
                         }
@@ -103,12 +103,11 @@ else
                                 Правильный ответ: <strong>@CurrentQuestion.Options[CurrentQuestion.CorrectAnswerIndex]</strong>
                             </p>
                         }
-
-                        <button class="btn-start" @onclick="NextQuestion">
-                            @(_currentIndex < QuizService.Questions.Count ? "Следующий вопрос →" : "Узнать результат!")
-                        </button>
-                    </div>
-                }
+                    }
+                    <button class="btn-start" @onclick="NextQuestion" disabled="@(!_isAnswered)">
+                        @(_currentIndex < QuizService.Questions.Count ? "Следующий вопрос →" : "Узнать результат!")
+                    </button>
+                </div>
             </div>
         </div>
     </div>

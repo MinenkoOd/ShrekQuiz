@@ -15,18 +15,25 @@
 else if (_showResult)
 {
     <div class="result-screen">
-        <h1 class="hero-title" style="font-size: var(--text-3xl);">ПОЗДРАВЛЯЕМ!</h1>
-        <h2 class="hero-subtitle">Ты — настоящий знаток Болота!</h2>
-        <div class="result-score">
-            <span class="score-number">@_score</span>
-            <span class="score-total"> / @QuizService.Questions.Count</span>
+        <div class="result-layout">
+            <div class="result-content">
+                <h1 class="hero-title" style="font-size: var(--text-3xl);">ПОЗДРАВЛЯЕМ!</h1>
+                <h2 class="hero-subtitle">Ты — настоящий знаток Болота!</h2>
+                <div class="result-score">
+                    <span class="score-number">@_score</span>
+                    <span class="score-total"> / @QuizService.Questions.Count</span>
+                </div>
+                <p class="hero-description">@GetResultMessage()</p>
+                <div class="birthday-wishes">
+                    <p class="hero-subtitle" style="margin-bottom: var(--spacing-sm);">🎉 С Днём Рождения! 🎂</p>
+                    <p class="hero-description" style="margin: 0;">Желаем всего самого наилучшего, счастья, здоровья и исполнения всех желаний!</p>
+                </div>
+                <button class="btn-start" @onclick="RestartQuiz">Пройти еще раз</button>
+            </div>
+            <div class="result-image-container">
+                <img src="images/PictureResult.PNG" alt="С Днём Рождения!" class="result-image" />
+            </div>
         </div>
-        <p class="hero-description">@GetResultMessage()</p>
-        <div class="birthday-wishes">
-            <p class="hero-subtitle" style="margin-bottom: var(--spacing-sm);">🎉 С Днём Рождения! 🎂</p>
-            <p class="hero-description" style="margin: 0;">Желаем всего самого наилучшего, счастья, здоровья и исполнения всех желаний!</p>
-        </div>
-        <button class="btn-start" @onclick="RestartQuiz">Пройти еще раз</button>
     </div>
 }
 else

@@ -10,6 +10,10 @@
         <h2 class="hero-subtitle">Битва за Болото</h2>
         <p class="hero-description">26 вопросов о легендарном болотном огре</p>
         <button class="btn-start" @onclick="StartQuiz">Начать квиз!</button>
+        @if (QuizService.Questions.Count > 0)
+        {
+            <img src="@QuizService.Questions[0].ImagePath" style="display:none;" alt="" />
+        }
     </div>
 }
 else if (_showResult)
@@ -62,6 +66,10 @@ else
             @if (!string.IsNullOrEmpty(GetNextImagePath()))
             {
                 <img src="@GetNextImagePath()" style="display:none;" alt="" />
+            }
+            @if (_currentIndex == QuizService.Questions.Count)
+            {
+                <img src="images/PictureResult.PNG" style="display:none;" alt="" />
             }
 
             <div class="question-content">
